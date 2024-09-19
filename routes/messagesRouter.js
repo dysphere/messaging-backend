@@ -1,11 +1,14 @@
-const express = require('express');
+const { Router } = require("express");
+const messagesRouter = Router();
 const messageController = require('../controllers/messageController');
 
-const router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+messagesRouter.get('/', messageController.getChatrooms);
 
-module.exports = router;
+messagesRouter.post('/new', messageController.createChatroomPost);
+
+messagesRouter.get('/:chatroom', messageController.getChatroomMessages);
+
+messagesRouter.post('/:chatroom/new', messageController.createChatroomMessagePost);
+
+module.exports = messagesRouter;
