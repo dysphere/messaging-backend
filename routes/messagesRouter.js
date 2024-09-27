@@ -1,14 +1,15 @@
 const { Router } = require("express");
+const passport = require("passport");
 const messagesRouter = Router();
 const messageController = require('../controllers/messageController');
 
 
-messagesRouter.get('/', messageController.getChatrooms);
+messagesRouter.get('/', passport.authenticate("local"), messageController.getChatrooms);
 
-messagesRouter.post('/new', messageController.createChatroomPost);
+messagesRouter.post('/new', passport.authenticate("local"), messageController.createChatroomPost);
 
-messagesRouter.get('/:chatroom', messageController.getChatroomMessages);
+messagesRouter.get('/:chatroom', passport.authenticate("local"), messageController.getChatroomMessages);
 
-messagesRouter.post('/:chatroom/new', messageController.createChatroomMessagePost);
+messagesRouter.post('/:chatroom/new', passport.authenticate("local"), messageController.createChatroomMessagePost);
 
 module.exports = messagesRouter;
