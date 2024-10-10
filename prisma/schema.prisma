@@ -45,3 +45,10 @@ model User {
   profile    Profile?
   Chatroom   Chatroom[]
 }
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}

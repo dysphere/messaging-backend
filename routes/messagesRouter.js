@@ -6,6 +6,8 @@ const messageController = require('../controllers/messageController');
 
 messagesRouter.get('/', passport.authenticate("local"), messageController.getChatrooms);
 
+messagesRouter.get('/users', passport.authenticate("local"), messageController.getUsers);
+
 messagesRouter.post('/new', passport.authenticate("local"), messageController.createChatroomPost);
 
 messagesRouter.get('/:chatroom', passport.authenticate("local"), messageController.getChatroomMessages);

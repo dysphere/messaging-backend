@@ -25,14 +25,31 @@ exports.getChatrooms = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
     try {
-        const users = await prisma.user.findMany({})
+        const users = await prisma.user.findMany({
+            orderBy: {
+                name: 'asc',
+            },
+            where: {
+                NOT: {name: req.user.username},
+        },
+    })
+        return res.status(201).json(users);
     }
-    catch(err) {}
+    catch(err) {
+        return res.status(500).json({message: "Could not get users."})
+    }
 }
 
 exports.createChatroomPost = async (req, res) => {
     try {
+        let filteredUsers = [];
         const users = req.body.user;
+        if (Array.isArray(users)) {
+            for () {}
+        }
+        else if (users) {}
+        else {}
+
         const chatroom = await prisma.chatroom.create({});
     }
     catch(err) {
@@ -48,7 +65,7 @@ exports.getChatroomMessages = async (req, res) => {
         return res.status(201).json(chatmessages);
     }
     catch(err) {
-        return res.status(500).json();
+        return res.status(500).json({message: "Could not get chatroom messages"});
     }
 }
 
@@ -56,5 +73,7 @@ exports.createChatroomMessagePost = [ async (req, res) => {
     try {
         const message = await prisma.message.create({})
     }
-    catch(err) {}
+    catch(err) {
+        return res.status(500).json({message: "Could not post chatroom message"})
+    }
 } ]

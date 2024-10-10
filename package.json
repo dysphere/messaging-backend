@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev": "DEBUG=myapp:* npm start"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
+    "@quixo3/prisma-session-store": "^3.1.13",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -18,7 +20,6 @@
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "passport": "^0.7.0",
-    "passport-anonymous": "^1.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.13.0",
     "socket.io": "^4.7.5"
