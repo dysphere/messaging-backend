@@ -1,11 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+const prisma = require("../db/prisma");
 const { body, validationResult } = require("express-validator");
-
-const prisma = new PrismaClient()
 
 exports.getChatrooms = async (req, res) => {
     try {
@@ -42,15 +36,23 @@ exports.getUsers = async (req, res) => {
 
 exports.createChatroomPost = async (req, res) => {
     try {
-        let filteredUsers = [];
+        // req.user.username--I meant to make it so that and users in list added
+        let filteredUsers = [{user: req.user.username}];
         const users = req.body.user;
         if (Array.isArray(users)) {
-            for () {}
+            for (let i = 0; i < users.length; i++) {
+                filteredUsers.push({user: users[i]});
+            }
+            const chatroom = await prisma.chatroom.create({data: {user: {connect: filteredUsers}}});
+            return res.status(201).json(chatroom);
         }
-        else if (users) {}
-        else {}
-
-        const chatroom = await prisma.chatroom.create({});
+        else if (users) {
+            const chatroom = await prisma.chatroom.create({data: {user: {connect: [{user: req.user.username}, {user: users}]}}});
+            return res.status(201).json(chatroom);
+        }
+        else {
+            return res.status(400).json({message: "Invalid request"})
+        }
     }
     catch(err) {
         return res.status(500).json({message: "Could not create chatroom"})
@@ -71,7 +73,7 @@ exports.getChatroomMessages = async (req, res) => {
 
 exports.createChatroomMessagePost = [ async (req, res) => {
     try {
-        const message = await prisma.message.create({})
+        const message = await prisma.message.create({data: {}});
     }
     catch(err) {
         return res.status(500).json({message: "Could not post chatroom message"})

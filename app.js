@@ -7,24 +7,22 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require('passport-local').Strategy;
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
-const { PrismaClient } = require('@prisma/client');
 const bcrypt = require("bcryptjs");
+const app = express();
 
-const prisma = new PrismaClient()
+const prisma = require("./db/prisma");
 
 const indexRouter = require('./routes/usersRouter');
 const messageRouter = require('./routes/messagesRouter');
 
-const app = express();
-
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
-  expressSession({
+  session({
     cookie: {
      maxAge: 7 * 24 * 60 * 60 * 1000 // ms
     },
@@ -32,7 +30,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     store: new PrismaSessionStore(
-      new PrismaClient(),
+      prisma,
       {
         checkPeriod: 2 * 60 * 1000,  //ms
         dbRecordIdIsSessionId: true,
@@ -41,8 +39,8 @@ app.use(
     )
   })
 );
-app.use(passport.authenticate('session'));
-app.use(express.urlencoded({ extended: false }));
+app.use(passport.session());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/', indexRouter);
 app.use('/messages', messageRouter);
@@ -50,8 +48,7 @@ app.use('/messages', messageRouter);
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
-      const { rows } = await prisma.user.findUnique({where: {username: username},})
-      const user = rows[0];
+      const user = await prisma.user.findUnique({where: {username: username},})
       const match = await bcrypt.compare(password, user.password);
 
       if (!user) {
@@ -73,9 +70,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const { rows } = await prisma.user.findUnique({where: {id: id}})
-    const user = rows[0];
-
+    const user = await prisma.user.findUnique({where: {id: id}})
     done(null, user);
   } catch(err) {
     done(err);
