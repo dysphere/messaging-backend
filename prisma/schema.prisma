@@ -17,11 +17,11 @@ model Message {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  content    String   @db.VarChar(255)
+  content    String   
   chatroom   Chatroom @relation(fields: [chatroomId], references: [id])
-  chatroomId Int      @default(autoincrement())
+  chatroomId Int      
   user       User     @relation(fields: [userId], references: [id])
-  userId     Int      @unique
+  userId     Int      
 }
 
 model Chatroom {

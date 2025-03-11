@@ -73,7 +73,9 @@ exports.getChatroomMessages = async (req, res) => {
 
 exports.createChatroomMessagePost = [ async (req, res) => {
     try {
-        const message = await prisma.message.create({data: {}});
+        const message = await prisma.message.create({data: {
+            
+        }});
     }
     catch(err) {
         return res.status(500).json({message: "Could not post chatroom message"})

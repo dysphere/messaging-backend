@@ -16,23 +16,22 @@ const validateUser = [
 ]
 
 exports.createUserPost = [ validateUser, async (req, res, next) => {
-    bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
-        // if err, do something
-        if (err) {
-            return next(err);
-        }
-        // otherwise, store hashedPassword in DB
-        const post = await prisma.user.create({
-            data: {
-              username: req.body.username,
-              password: hashedPassword,
-            },
-          })
-          res.json(post);
-      });
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const user = await prisma.user.create({
+     data: {
+       username: req.body.username,
+       password: hashedPassword,
+     },
+   });
+   res.json(user);
+    res.redirect("/");
+   } catch (error) {
+      console.error(error);
+      next(error);
+     }
 }
 ]
-
 exports.userLoginPost = 
     passport.authenticate("local", {
         successRedirect: "/",
