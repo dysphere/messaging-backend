@@ -1,19 +1,18 @@
 const prisma = require("../db/prisma");
-const { body, validationResult } = require("express-validator");
 
 exports.getChatrooms = async (req, res) => {
     try {
         const chatrooms = await prisma.chatroom.findMany({where: {
             user: {
                 name: {
-                    has: req.user.username
+                    has: req.user.username,
                 },
             }
         },});
-        return res.status(201).json(chatrooms)
+        return res.status(201).json(chatrooms);
     }
     catch(err) {
-        return res.status(500).json({message: "Could not get chatrooms"})
+        return res.status(500).json({message: "Could not get chatrooms"});
     }
 }
 
@@ -30,7 +29,7 @@ exports.getUsers = async (req, res) => {
         return res.status(201).json(users);
     }
     catch(err) {
-        return res.status(500).json({message: "Could not get users."})
+        return res.status(500).json({message: "Could not get users."});
     }
 }
 
@@ -51,18 +50,22 @@ exports.createChatroomPost = async (req, res) => {
             return res.status(201).json(chatroom);
         }
         else {
-            return res.status(400).json({message: "Invalid request"})
+            return res.status(400).json({message: "Invalid request"});
         }
     }
     catch(err) {
-        return res.status(500).json({message: "Could not create chatroom"})
+        return res.status(500).json({message: "Could not create chatroom"});
     }
 }
 
 exports.getChatroomMessages = async (req, res) => {
     try {
-        const chatmessages = await prisma.message.findMany({where: {
-            chatroomId: req.params
+        const chatmessages = await prisma.message.findMany({
+            orderBy: {
+                createdAt: 'asc',
+            },
+            where: {
+            chatroomId: parseInt(req.params.id),
         }},)
         return res.status(201).json(chatmessages);
     }
@@ -71,13 +74,36 @@ exports.getChatroomMessages = async (req, res) => {
     }
 }
 
-exports.createChatroomMessagePost = [ async (req, res) => {
+exports.createChatroomMessagePost = async (req, res) => {
     try {
         const message = await prisma.message.create({data: {
-            
+            content: req.body.content,
+            chatroomId: parseInt(req.params.chatroom),
+            userId: req.user.id,
         }});
+        return res.status(201).json(message);
     }
     catch(err) {
-        return res.status(500).json({message: "Could not post chatroom message"})
+        return res.status(500).json({message: "Could not post chatroom message"});
     }
-} ]
+} 
+
+exports.updateMessage = async (req, res) => {
+    try {
+        
+        return res.status(201).json(message);
+    }
+    catch(err) {
+        return res.status(500).json({message: "Could not update chatroom message"});
+    }
+}
+
+exports.deleteMessage = async (req, res) => {
+    try {
+        
+        return res.status(201).json(message);
+    }
+    catch(err) {
+        return res.status(500).json({message: "Could not post chatroom message"});
+    }
+}

@@ -14,6 +14,7 @@ const prisma = require("./db/prisma");
 
 const indexRouter = require('./routes/usersRouter');
 const messageRouter = require('./routes/messagesRouter');
+const profileRouter = require('./routes/profilesRouter');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -44,6 +45,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/', indexRouter);
 app.use('/messages', messageRouter);
+app.use('/profile', profileRouter);
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {

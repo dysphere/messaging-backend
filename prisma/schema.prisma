@@ -43,7 +43,9 @@ model User {
   password   String
   messages   Message[]
   profile    Profile?
-  Chatroom   Chatroom[]
+  chatroom   Chatroom[]
+  friendedBy  User[]    @relation("UserFriends")
+  friends    User[]    @relation("UserFriends")
 }
 
 model Session {

@@ -1,13 +1,13 @@
 const { Router } = require("express");
-const usersRouter = Router();
+const router = Router();
 const userController = require("../controllers/userController");
 
-usersRouter.get('/', userController.HomeRedirect);
+router.get('/', userController.HomeRedirect);
 
-usersRouter.post('/signup', userController.createUserPost);
+router.post('/signup', userController.createUserPost);
 
-usersRouter.post('/login', userController.userLoginPost);
+router.post('/login', userController.userLoginPost);
 
-usersRouter.post('/logout', userController.userLogoutPost);
+router.post('/logout', userController.userLogoutPost);
 
-module.exports = usersRouter;
+module.exports = router;
