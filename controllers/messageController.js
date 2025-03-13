@@ -25,11 +25,27 @@ exports.getUsers = async (req, res) => {
             where: {
                 NOT: {name: req.user.username},
         },
-    })
+    });
         return res.status(201).json(users);
     }
     catch(err) {
         return res.status(500).json({message: "Could not get users."});
+    }
+}
+
+exports.createSmallChatroomPost = async (req, res) => {
+    try {
+        const chatroom = await prisma.chatroom.create({
+            data: {
+                user: {
+                    connect: [{id: req.user.id}, {id: parseInt(req.params.id)}],
+                }
+              },
+        });
+        return res.status(201).json(chatroom);
+    }
+    catch(err) {
+        return res.status(500).json({message: "Could not create chatroom"});
     }
 }
 
@@ -58,6 +74,20 @@ exports.createChatroomPost = async (req, res) => {
     }
 }
 
+exports.deleteChatroom = async (req, res) => {
+    try {
+        const chatroom = await prisma.chatroom.delete({
+            where: {
+              id: parseInt(req.params.chatroom),
+            },
+          });
+          return res.status(201).json(chatroom);
+    }
+    catch(err) {
+        return res.status(500).json({message: "Could not create chatroom"});
+    }
+}
+
 exports.getChatroomMessages = async (req, res) => {
     try {
         const chatmessages = await prisma.message.findMany({
@@ -65,7 +95,7 @@ exports.getChatroomMessages = async (req, res) => {
                 createdAt: 'asc',
             },
             where: {
-            chatroomId: parseInt(req.params.id),
+            chatroomId: parseInt(req.params.chatroom),
         }},)
         return res.status(201).json(chatmessages);
     }
@@ -90,7 +120,14 @@ exports.createChatroomMessagePost = async (req, res) => {
 
 exports.updateMessage = async (req, res) => {
     try {
-        
+        const message = await prisma.message.update({
+            where: {
+                id: parseInt(req.params.id),
+              },
+              data: {
+                content: req.body.content,
+              },
+        });
         return res.status(201).json(message);
     }
     catch(err) {
@@ -100,7 +137,11 @@ exports.updateMessage = async (req, res) => {
 
 exports.deleteMessage = async (req, res) => {
     try {
-        
+        const message = await prisma.message.delete({
+            where: {
+                id: parseInt(req.params.id),
+              },
+        });
         return res.status(201).json(message);
     }
     catch(err) {

@@ -1,5 +1,21 @@
 const prisma = require("../db/prisma");
 
+exports.getProfiles = async (req, res) => {
+    try {
+        const profiles = await prisma.profile.findMany({
+            orderBy: {
+              user: {
+                name: 'asc',
+              },
+            },
+          });
+        return res.status(201).json(profiles);
+    }
+    catch(error) {
+        return res.status(500).json({message: "Could not find profiles"});
+    }
+}
+
 exports.getChatroomProfiles = async (req, res) => {
     try {
         const profiles = await prisma.profile.findMany({

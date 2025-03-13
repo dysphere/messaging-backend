@@ -3,6 +3,8 @@ const passport = require("passport");
 const router = Router();
 const profileController = require("../controllers/profileController");
 
+router.get('/', passport.authenticate("local"), profileController.getProfiles);
+
 router.get('/chatroom/:id', passport.authenticate("local"), profileController.getChatroomProfiles);
 
 router.post('/create', passport.authenticate("local"), profileController.createProfile);

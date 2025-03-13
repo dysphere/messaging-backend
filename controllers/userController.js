@@ -3,6 +3,64 @@ const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const prisma = require("../db/prisma");
 
+exports.addFriend = async (req, res) => {
+  try {
+    const friend = await prisma.user.update({
+      where: {
+        id: req.user.id,
+      },
+      data: {
+        friends: {
+          connect: { id: parseInt(req.params.id)},
+        },
+      },
+    });
+    const friend_2 = await prisma.user.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: {
+        friendedBy: {
+          connect: { id: req.user.id},
+        },
+      },
+    });
+    res.json(friend, friend_2);
+   } catch (error) {
+      console.error(error);
+      next(error);
+     }
+}
+
+exports.removeFriend = async (req, res) => {
+  try {
+    const unfriend = await prisma.user.update({
+      where: {
+        id: req.user.id,
+      },
+      data: {
+        friends: {
+          disconnect: { id: parseInt(req.params.id)},
+        },
+      },
+    });
+    const unfriend_2 = await prisma.user.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: {
+        friendedBy: {
+          disconnect: { id: req.user.id},
+        },
+      },
+    });
+    res.json(unfriend, unfriend_2);
+   } catch (error) {
+      console.error(error);
+      next(error);
+     }
+}
+
 exports.HomeRedirect = (req, res) => {
     res.redirect('/signup')
 }
