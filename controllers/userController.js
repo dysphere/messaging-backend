@@ -82,8 +82,12 @@ exports.createUserPost = [ validateUser, async (req, res, next) => {
        password: hashedPassword,
      },
    });
-   res.json(user);
-    res.redirect("/");
+   const profile = await prisma.profile.create({
+    data: {
+      userId: req.user.id,
+    },
+  });
+  return res.status(201).json(profile, user);
    } catch (error) {
       console.error(error);
       next(error);

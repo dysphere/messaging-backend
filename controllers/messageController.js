@@ -51,18 +51,17 @@ exports.createSmallChatroomPost = async (req, res) => {
 
 exports.createChatroomPost = async (req, res) => {
     try {
-        // req.user.username--I meant to make it so that and users in list added
-        let filteredUsers = [{user: req.user.username}];
+        let filteredUsers = [{id: req.user.id}];
         const users = req.body.user;
         if (Array.isArray(users)) {
             for (let i = 0; i < users.length; i++) {
-                filteredUsers.push({user: users[i]});
+                filteredUsers.push({id: users[i]});
             }
             const chatroom = await prisma.chatroom.create({data: {user: {connect: filteredUsers}}});
             return res.status(201).json(chatroom);
         }
         else if (users) {
-            const chatroom = await prisma.chatroom.create({data: {user: {connect: [{user: req.user.username}, {user: users}]}}});
+            const chatroom = await prisma.chatroom.create({data: {user: {connect: [{id: req.user.id}, {id: users}]}}});
             return res.status(201).json(chatroom);
         }
         else {
@@ -84,7 +83,7 @@ exports.deleteChatroom = async (req, res) => {
           return res.status(201).json(chatroom);
     }
     catch(err) {
-        return res.status(500).json({message: "Could not create chatroom"});
+        return res.status(500).json({message: "Could not delete chatroom"});
     }
 }
 
@@ -120,6 +119,12 @@ exports.createChatroomMessagePost = async (req, res) => {
 
 exports.updateMessage = async (req, res) => {
     try {
+        const user = await prisma.message.findUnique({
+            where: {
+                id: parseInt(req.params.id),
+              },
+        });
+        if (user.userId === req.user.id) {
         const message = await prisma.message.update({
             where: {
                 id: parseInt(req.params.id),
@@ -130,6 +135,10 @@ exports.updateMessage = async (req, res) => {
         });
         return res.status(201).json(message);
     }
+    else {
+        return res.status(403).json({message: "Invalid user"});
+    }
+    }
     catch(err) {
         return res.status(500).json({message: "Could not update chatroom message"});
     }
@@ -137,12 +146,22 @@ exports.updateMessage = async (req, res) => {
 
 exports.deleteMessage = async (req, res) => {
     try {
+        const user = await prisma.message.findUnique({
+            where: {
+                id: parseInt(req.params.id),
+              },
+        });
+        if (user.userId === req.user.id) {
         const message = await prisma.message.delete({
             where: {
                 id: parseInt(req.params.id),
               },
         });
         return res.status(201).json(message);
+    }
+    else {
+        return res.status(403).json({message: "Invalid user"});
+    }
     }
     catch(err) {
         return res.status(500).json({message: "Could not post chatroom message"});

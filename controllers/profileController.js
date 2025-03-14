@@ -38,24 +38,14 @@ exports.getChatroomProfiles = async (req, res) => {
     }
 }
 
-exports.createProfile = async (req, res) => {
-    try {
-        const profile = await prisma.profile.create({
-            data: {
-              bio: req.body.bio,
-              userId: req.user.id,
-            },
-          });
-          return res.status(201).json(profile);
-    }
-    catch(error) {
-        return res.status(500).json({message: "Could not create profile"});
-    }
-}
-
 exports.getProfile = async (req, res) => {
     try {
-        const profile = await prisma.profile.findUnique({});
+        const profile = await prisma.profile.findUnique({
+            where: {
+                id: parseInt(req.params.id),
+              },
+        });
+        return res.status(201).json(profile);
     }
     catch(error) {
         return res.status(500).json({message: "Could not get profile"});
@@ -64,6 +54,12 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     try {
+        const profile_read = await prisma.profile.findUnique({
+            where: {
+                id: parseInt(req.params.id),
+              },
+        });
+        if (profile_read.userId === req.user.id) {
         const profile = await prisma.profile.update({
             where: {
               id: parseInt(req.params.id),
@@ -73,6 +69,10 @@ exports.updateProfile = async (req, res) => {
             },
           });
           return res.status(201).json(profile);
+        }
+        else {
+            return res.status(403).json({message: "Invalid user"});
+        }
     }
     catch(error) {
         return res.status(500).json({message: "Could not update profile"});
