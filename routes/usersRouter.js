@@ -7,7 +7,7 @@ router.post('/:id/friend', passport.authenticate("local"), userController.addFri
 
 router.post('/:id/unfriend', passport.authenticate("local"), userController.removeFriend);
 
-router.get('/', userController.HomeRedirect);
+router.get('/user', passport.authenticate("local"), userController.getCurrentUser);
 
 router.post('/signup', userController.createUserPost);
 

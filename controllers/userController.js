@@ -61,8 +61,8 @@ exports.removeFriend = async (req, res) => {
      }
 }
 
-exports.HomeRedirect = (req, res) => {
-    res.redirect('/signup')
+exports.getCurrentUser = (req, res) => {
+    return req.user;
 }
 
 const validateUser = [
