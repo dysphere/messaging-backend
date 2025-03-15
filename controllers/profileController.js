@@ -9,7 +9,7 @@ exports.getProfiles = async (req, res) => {
               },
             },
           });
-        return res.status(201).json(profiles);
+        return res.status(201).json({profiles});
     }
     catch(error) {
         return res.status(500).json({message: "Could not find profiles"});
@@ -31,7 +31,7 @@ exports.getChatroomProfiles = async (req, res) => {
               }
             },
           });
-          return res.status(201).json(profiles);
+          return res.status(201).json({profiles});
     }
     catch(error) {
         return res.status(500).json({message: "Could not find profiles for chatroom"});
@@ -45,7 +45,7 @@ exports.getProfile = async (req, res) => {
                 id: parseInt(req.params.id),
               },
         });
-        return res.status(201).json(profile);
+        return res.status(201).json({profile});
     }
     catch(error) {
         return res.status(500).json({message: "Could not get profile"});
@@ -68,7 +68,7 @@ exports.updateProfile = async (req, res) => {
               bio: req.body.bio,
             },
           });
-          return res.status(201).json(profile);
+          return res.status(201).json({profile});
         }
         else {
             return res.status(403).json({message: "Invalid user"});

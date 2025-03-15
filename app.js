@@ -8,6 +8,7 @@ const passport = require("passport");
 const LocalStrategy = require('passport-local').Strategy;
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const bcrypt = require("bcryptjs");
+const cors = require('cors')
 const app = express();
 
 const prisma = require("./db/prisma");
@@ -17,6 +18,7 @@ const messageRouter = require('./routes/messagesRouter');
 const profileRouter = require('./routes/profilesRouter');
 
 app.use(logger('dev'));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -93,7 +95,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.status(500).json({ error: "error" });
 });
 
 module.exports = app;

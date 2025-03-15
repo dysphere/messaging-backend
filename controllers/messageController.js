@@ -9,7 +9,7 @@ exports.getChatrooms = async (req, res) => {
                 },
             }
         },});
-        return res.status(201).json(chatrooms);
+        return res.status(201).json({chatrooms});
     }
     catch(err) {
         return res.status(500).json({message: "Could not get chatrooms"});
@@ -26,7 +26,7 @@ exports.getUsers = async (req, res) => {
                 NOT: {name: req.user.username},
         },
     });
-        return res.status(201).json(users);
+        return res.status(201).json({users});
     }
     catch(err) {
         return res.status(500).json({message: "Could not get users."});
@@ -42,7 +42,7 @@ exports.createSmallChatroomPost = async (req, res) => {
                 }
               },
         });
-        return res.status(201).json(chatroom);
+        return res.status(201).json({chatroom});
     }
     catch(err) {
         return res.status(500).json({message: "Could not create chatroom"});
@@ -58,11 +58,11 @@ exports.createChatroomPost = async (req, res) => {
                 filteredUsers.push({id: users[i]});
             }
             const chatroom = await prisma.chatroom.create({data: {user: {connect: filteredUsers}}});
-            return res.status(201).json(chatroom);
+            return res.status(201).json({chatroom});
         }
         else if (users) {
             const chatroom = await prisma.chatroom.create({data: {user: {connect: [{id: req.user.id}, {id: users}]}}});
-            return res.status(201).json(chatroom);
+            return res.status(201).json({chatroom});
         }
         else {
             return res.status(400).json({message: "Invalid request"});
@@ -80,7 +80,7 @@ exports.deleteChatroom = async (req, res) => {
               id: parseInt(req.params.chatroom),
             },
           });
-          return res.status(201).json(chatroom);
+          return res.status(201).json({chatroom});
     }
     catch(err) {
         return res.status(500).json({message: "Could not delete chatroom"});
@@ -96,7 +96,7 @@ exports.getChatroomMessages = async (req, res) => {
             where: {
             chatroomId: parseInt(req.params.chatroom),
         }},)
-        return res.status(201).json(chatmessages);
+        return res.status(201).json({chatmessages});
     }
     catch(err) {
         return res.status(500).json({message: "Could not get chatroom messages"});
@@ -110,7 +110,7 @@ exports.createChatroomMessagePost = async (req, res) => {
             chatroomId: parseInt(req.params.chatroom),
             userId: req.user.id,
         }});
-        return res.status(201).json(message);
+        return res.status(201).json({message});
     }
     catch(err) {
         return res.status(500).json({message: "Could not post chatroom message"});
@@ -133,7 +133,7 @@ exports.updateMessage = async (req, res) => {
                 content: req.body.content,
               },
         });
-        return res.status(201).json(message);
+        return res.status(201).json({message});
     }
     else {
         return res.status(403).json({message: "Invalid user"});
@@ -157,7 +157,7 @@ exports.deleteMessage = async (req, res) => {
                 id: parseInt(req.params.id),
               },
         });
-        return res.status(201).json(message);
+        return res.status(201).json({message});
     }
     else {
         return res.status(403).json({message: "Invalid user"});
