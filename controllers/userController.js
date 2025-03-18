@@ -63,12 +63,12 @@ exports.removeFriend = async (req, res) => {
 
 exports.getCurrentUser = async (req, res) => {
   try {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: req.user.id,
-    },
-  });
-  return res.status(201).json({user});
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+    });
+    return res.status(200).json({user});
 }
 catch (error) {
   console.error(error);
@@ -77,7 +77,7 @@ catch (error) {
 }
 
 const validateUser = [
-    body("name").trim()
+    body("username").trim()
     .isAlphanumeric().withMessage(`Username must only contain alphanumeric characters`)
     .isLength({ min: 1, max: 10 }).withMessage(`Username must be between 1 and 10 characters`),
   body("password").trim()
@@ -89,7 +89,7 @@ exports.createUserPost = [ validateUser, async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = await prisma.user.create({
      data: {
-      name: req.body.name,
+      username: req.body.username,
        password: hashedPassword,
      },
    });

@@ -9,7 +9,7 @@ exports.getChatrooms = async (req, res) => {
                 },
             }
         },});
-        return res.status(201).json({chatrooms});
+        return res.status(200).json({chatrooms});
     }
     catch(err) {
         return res.status(500).json({message: "Could not get chatrooms"});
@@ -26,7 +26,7 @@ exports.getUsers = async (req, res) => {
                 NOT: {name: req.user.username},
         },
     });
-        return res.status(201).json({users});
+        return res.status(200).json({users});
     }
     catch(err) {
         return res.status(500).json({message: "Could not get users."});
@@ -96,7 +96,7 @@ exports.getChatroomMessages = async (req, res) => {
             where: {
             chatroomId: parseInt(req.params.chatroom),
         }},)
-        return res.status(201).json({chatmessages});
+        return res.status(200).json({chatmessages});
     }
     catch(err) {
         return res.status(500).json({message: "Could not get chatroom messages"});

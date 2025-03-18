@@ -1,24 +1,24 @@
 const { Router } = require("express");
-const passport = require("passport");
+const { isAuth } = require("./auth");
 const router = Router();
 const messageController = require('../controllers/messageController');
 
-router.get('/', passport.authenticate("local"), messageController.getChatrooms);
+router.get('/', isAuth, messageController.getChatrooms);
 
-router.get('/users', passport.authenticate("local"), messageController.getUsers);
+router.get('/users', isAuth, messageController.getUsers);
 
-router.post('/:id/new', passport.authenticate("local"), messageController.createSmallChatroomPost);
+router.post('/:id/new', isAuth, messageController.createSmallChatroomPost);
 
-router.post('/new', passport.authenticate("local"), messageController.createChatroomPost);
+router.post('/new', isAuth, messageController.createChatroomPost);
 
-router.delete('/:chatroom/delete', passport.authenticate("local"), messageController.deleteChatroom);
+router.delete('/:chatroom/delete', isAuth, messageController.deleteChatroom);
 
-router.get('/:chatroom', passport.authenticate("local"), messageController.getChatroomMessages);
+router.get('/:chatroom', isAuth, messageController.getChatroomMessages);
 
-router.post('/:chatroom/new', passport.authenticate("local"), messageController.createChatroomMessagePost);
+router.post('/:chatroom/new', isAuth, messageController.createChatroomMessagePost);
 
-router.put('/:id/update', passport.authenticate("local"), messageController.updateMessage);
+router.put('/:id/update', isAuth, messageController.updateMessage);
 
-router.delete('/:id/delete', passport.authenticate("local"), messageController.deleteMessage);
+router.delete('/:id/delete', isAuth, messageController.deleteMessage);
 
 module.exports = router;

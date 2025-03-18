@@ -4,12 +4,15 @@ exports.getProfiles = async (req, res) => {
     try {
         const profiles = await prisma.profile.findMany({
             orderBy: {
-              user: {
-                name: 'asc',
-              },
+                user: { 
+                    name: 'asc'  
+                }
             },
-          });
-        return res.status(201).json({profiles});
+            include: {
+                user: true, 
+            }
+        });
+        return res.status(200).json({profiles});
     }
     catch(error) {
         return res.status(500).json({message: "Could not find profiles"});
@@ -31,7 +34,7 @@ exports.getChatroomProfiles = async (req, res) => {
               }
             },
           });
-          return res.status(201).json({profiles});
+          return res.status(200).json({profiles});
     }
     catch(error) {
         return res.status(500).json({message: "Could not find profiles for chatroom"});
@@ -45,7 +48,7 @@ exports.getProfile = async (req, res) => {
                 id: parseInt(req.params.id),
               },
         });
-        return res.status(201).json({profile});
+        return res.status(200).json({profile});
     }
     catch(error) {
         return res.status(500).json({message: "Could not get profile"});
