@@ -2,13 +2,13 @@ const prisma = require("../db/prisma");
 
 exports.getChatrooms = async (req, res) => {
     try {
-        const chatrooms = await prisma.chatroom.findMany({where: {
-            user: {
-                name: {
-                    has: req.user.username,
-                },
+        const chatrooms = await prisma.chatroom.findMany({
+            where: {
+                user: {
+                    some: { id: req.user.id }
+                }
             }
-        },});
+        });
         return res.status(200).json({chatrooms});
     }
     catch(err) {
@@ -18,14 +18,7 @@ exports.getChatrooms = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
     try {
-        const users = await prisma.user.findMany({
-            orderBy: {
-                name: 'asc',
-            },
-            where: {
-                NOT: {name: req.user.username},
-        },
-    });
+        const users = await prisma.user.findMany();
         return res.status(200).json({users});
     }
     catch(err) {
@@ -92,10 +85,10 @@ exports.getChatroomMessages = async (req, res) => {
         const chatmessages = await prisma.message.findMany({
             orderBy: {
                 createdAt: 'asc',
-            },
+              },
             where: {
             chatroomId: parseInt(req.params.chatroom),
-        }},)
+        }},);
         return res.status(200).json({chatmessages});
     }
     catch(err) {

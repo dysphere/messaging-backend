@@ -3,9 +3,9 @@ const { isAuth } = require("./auth");
 const router = Router();
 const userController = require("../controllers/userController");
 
-router.post('/:id/friend', isAuth, userController.addFriend);
+router.put('/:id/friend', isAuth, userController.addFriend);
 
-router.post('/:id/unfriend', isAuth, userController.removeFriend);
+router.put('/:id/unfriend', isAuth, userController.removeFriend);
 
 router.get('/user', isAuth, userController.getCurrentUser);
 

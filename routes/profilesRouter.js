@@ -5,7 +5,7 @@ const profileController = require("../controllers/profileController");
 
 router.get('/', isAuth, profileController.getProfiles);
 
-router.get('/chatroom/:id', isAuth, profileController.getChatroomProfiles);
+router.get('/chat/:id', isAuth, profileController.getChatroomUsers);
 
 router.get('/:id', isAuth, profileController.getProfile);
 
