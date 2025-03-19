@@ -7,7 +7,10 @@ exports.getChatrooms = async (req, res) => {
                 user: {
                     some: { id: req.user.id }
                 }
-            }
+            },
+            include: {
+                user: true,
+              },
         });
         return res.status(200).json({chatrooms});
     }

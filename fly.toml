@@ -1,0 +1,25 @@
+# fly.toml app configuration file generated for messaging-backend on 2025-03-18T15:02:10-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'messaging-backend'
+primary_region = 'sjc'
+
+[build]
+
+[deploy]
+  release_command = 'npx prisma migrate deploy'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
