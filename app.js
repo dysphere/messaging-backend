@@ -8,7 +8,7 @@ const passport = require("passport");
 const LocalStrategy = require('passport-local').Strategy;
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const bcrypt = require("bcryptjs");
-const cors = require('cors')
+const cors = require('cors');
 const app = express();
 
 const prisma = require("./db/prisma");
