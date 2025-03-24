@@ -32,7 +32,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
     cookie: {
-     maxAge: 7 * 24 * 60 * 60 * 1000 // ms
+    httpOnly: true,
+    path: "/",
+    domain: "localhost",
+    secure: false,
+    sameSite: "lax", 
+    maxAge: 7 * 24 * 60 * 60 * 1000 // ms
     },
     secret: 'anagram mourner briskly skype aerospace',
     resave: true,
