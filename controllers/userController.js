@@ -1,6 +1,8 @@
+require('dotenv').config();
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-const passport = require("passport");
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const prisma = require("../db/prisma");
 
 exports.addFriend = async (req, res) => {
@@ -105,11 +107,17 @@ exports.createUserPost = [ validateUser, async (req, res, next) => {
      }
 }
 ]
-exports.userLoginPost = 
-    passport.authenticate("local", {
-        successRedirect: "/",
-        failureRedirect: "/"
-      })
+
+exports.userLoginPost = async (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.status(401).json({ message: info.message });
+
+    const token = jwt.sign({ id: user.id, username: user.username }, process.env.KEY, { expiresIn: '1d' });
+
+    return res.status(200).json({ token });
+  })(req, res, next)
+};
 
 exports.userLogoutPost = (req, res, next) => {
     req.logout((err) => {

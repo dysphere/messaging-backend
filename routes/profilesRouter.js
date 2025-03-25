@@ -1,14 +1,14 @@
 const { Router } = require("express");
-const { isAuth } = require("./auth");
+const passport = require('passport');
 const router = Router();
 const profileController = require("../controllers/profileController");
 
-router.get('/', isAuth, profileController.getProfiles);
+router.get('/', passport.authenticate('jwt'), profileController.getProfiles);
 
-router.get('/chat/:id', isAuth, profileController.getChatroomUsers);
+router.get('/chat/:id', passport.authenticate('jwt'), profileController.getChatroomUsers);
 
-router.get('/:id', isAuth, profileController.getProfile);
+router.get('/:id', passport.authenticate('jwt'), profileController.getProfile);
 
-router.put('/:id/update', isAuth, profileController.updateProfile);
+router.put('/:id/update', passport.authenticate('jwt'), profileController.updateProfile);
 
 module.exports = router;

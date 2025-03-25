@@ -1,3 +1,4 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -6,6 +7,8 @@ const logger = require('morgan');
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const bcrypt = require("bcryptjs");
 const cors = require('cors');
@@ -32,11 +35,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
     cookie: {
-    httpOnly: true,
-    path: "/",
-    domain: "localhost",
-    secure: false,
-    sameSite: "lax", 
     maxAge: 7 * 24 * 60 * 60 * 1000 // ms
     },
     secret: 'anagram mourner briskly skype aerospace',
@@ -78,6 +76,21 @@ passport.use(
   })
 );
 
+const opts = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.KEY,
+};
+
+passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
+  try {
+    const user = await prisma.user.findUnique({where: {id: jwt_payload.id}});
+    if (!user) return done(null, false);
+    return done(null, user);
+  } catch (err) {
+    return done(err, false);
+  }
+}));
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -90,7 +103,6 @@ passport.deserializeUser(async (id, done) => {
     done(err);
   }
 });
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

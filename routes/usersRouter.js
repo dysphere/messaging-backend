@@ -1,13 +1,13 @@
 const { Router } = require("express");
-const { isAuth } = require("./auth");
+const passport = require('passport');
 const router = Router();
 const userController = require("../controllers/userController");
 
-router.put('/:id/friend', isAuth, userController.addFriend);
+router.put('/:id/friend', passport.authenticate('jwt'), userController.addFriend);
 
-router.put('/:id/unfriend', isAuth, userController.removeFriend);
+router.put('/:id/unfriend', passport.authenticate('jwt'), userController.removeFriend);
 
-router.get('/user', isAuth, userController.getCurrentUser);
+router.get('/user', passport.authenticate('jwt'), userController.getCurrentUser);
 
 router.post('/signup', userController.createUserPost);
 
