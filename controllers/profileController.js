@@ -32,6 +32,9 @@ exports.getProfile = async (req, res) => {
             where: {
                 id: parseInt(req.params.id),
               },
+              include: {
+                user: true,
+              },
         });
         return res.status(200).json({profile});
     }
