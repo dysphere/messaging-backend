@@ -89,6 +89,9 @@ exports.getChatroomMessages = async (req, res) => {
             orderBy: {
                 createdAt: 'asc',
               },
+              include: {
+                user: true,
+              },
             where: {
             chatroomId: parseInt(req.params.chatroom),
         }},);
